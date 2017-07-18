@@ -10,12 +10,12 @@ class CategorySpiderTestCase(unittest.TestCase):
         self.spider = CategorySpider()
 
     def test_parse_with_success_response(self):
-        response = fake_response('category_data.html')
+        response = fake_response('./data/category_data.html')
         result = self.spider.parse(response)
         self.assertEqual(len(result), 61)
 
     def test_parse_with_empty_response(self):
-        response = fake_response('category_empty_data.html')
+        response = fake_response('./data/empty_data.html')
         result = self.spider.parse(response)
         self.assertEqual(len(result), 0)
 

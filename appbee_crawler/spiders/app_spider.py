@@ -3,6 +3,7 @@ import scrapy
 from scrapy.selector import Selector
 from appbee_crawler.app_items import AppItem
 from appbee_crawler.util.date_util import DateUtil
+from appbee_crawler.util.string_util import StringUtil
 
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
@@ -43,10 +44,19 @@ class AppSpider(scrapy.Spider):
         items = []
         item = AppItem()
         item['package_name'] = response.meta.get('package_name')
-        item['app_name'] = hxs.xpath("//div[@class='id-app-title']/text()[1]").extract()[0]
+
+        appName = hxs.xpath("//div[@class='id-app-title']/text()[1]").extract()
+
+        if len(appName) is 0:
+            return None
+
+        item['app_name'] = appName[0]
         item['star'] = hxs.xpath("//div[@class='score']/text()[1]").extract()[0]
-        item['installs_min'] = hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0].split('-')[0].replace(',', '')
-        item['installs_max'] = hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0].split('-')[1].replace(',', '')
+
+        installs = StringUtil().getPureNumber(hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0])
+        item['installs_min'] = installs.split('-')[0]
+        item['installs_max'] = installs.split('-')[1]
+
         item['reviews'] = hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0].replace(',', '')
         item['updated'] = DateUtil().get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0].replace(' ', ''))
         item['category_id'] = hxs.xpath("//span[@itemprop='genre']/text()[1]").extract()[0]
@@ -57,7 +67,7 @@ class AppSpider(scrapy.Spider):
         appPrice = hxs.xpath("//div[@class='info-container']//button[@class='price buy id-track-click id-track-impression']/span[last()]/text()[1]").extract()[0].split('₩')
 
         if len(appPrice) == 2:
-            item['app_price'] = appPrice[1].replace(',', '')
+            item['app_price'] = int(appPrice[1].replace(',', ''))
         else:
             item['app_price'] = 0
 
@@ -65,13 +75,14 @@ class AppSpider(scrapy.Spider):
         if inappPriceListSize > 0:
             in_app_price_string = hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]").extract()[0].replace(',', '')
             if '~' not in in_app_price_string:
-                item['inapp_price_min'] = in_app_price_string.split('₩')[1]
+                item['inapp_price_min'] = int(StringUtil().getPureNumber(in_app_price_string.split('₩')[1]))
             else:
-                item['inapp_price_min'] = in_app_price_string.split('~')[0].split('₩')[1]
-                item['inapp_price_max'] = in_app_price_string.split('~')[1].split('₩')[1]
+                item['inapp_price_min'] = int(StringUtil().getPureNumber(in_app_price_string.split('~')[0].split('₩')[1]))
+                item['inapp_price_max'] = int(StringUtil().getPureNumber(in_app_price_string.split('~')[1].split('₩')[1]))
         else:
             item['inapp_price_min'] = 0
             item['inapp_price_max'] = 0
 
         items.append(item)
         return items
+
