@@ -53,12 +53,12 @@ class AppSpider(scrapy.Spider):
         item['app_name'] = appName[0]
         item['star'] = float(hxs.xpath("//div[@class='score']/text()[1]").extract()[0])
 
-        installs = StringUtil().getPureNumber(hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0])
-        item['installs_min'] = int(installs.split('-')[0])
-        item['installs_max'] = int(installs.split('-')[1])
+        installs = hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0].split('-')
+        item['installs_min'] = StringUtil.parseNumber(installs[0])
+        item['installs_max'] = StringUtil.parseNumber(installs[1])
 
-        item['review_count'] = int(hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0].replace(',', ''))
-        item['updated_date'] = DateUtil().get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0].replace(' ', ''))
+        item['review_count'] = StringUtil.parseNumber(hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0])
+        item['updated_date'] = DateUtil.get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0])
         item['category_id'] = hxs.xpath("//span[@itemprop='genre']/text()[1]").extract()[0]
         item['contents_rating'] = hxs.xpath("//div[@itemprop='contentRating']/text()[1]").extract()[0]
         item['developer'] = hxs.xpath("//a[@class='document-subtitle primary']/span[@itemprop='name']//text()[1]").extract()[0]
@@ -67,22 +67,23 @@ class AppSpider(scrapy.Spider):
         appPrice = hxs.xpath("//div[@class='info-container']//button[@class='price buy id-track-click id-track-impression']/span[last()]/text()[1]").extract()[0].split('₩')
 
         if len(appPrice) == 2:
-            item['app_price'] = int(appPrice[1].replace(',', ''))
+            item['app_price'] = StringUtil.parseNumber(appPrice[1])
         else:
             item['app_price'] = 0
 
-        inappPriceListSize = len(hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]"))
-        if inappPriceListSize > 0:
-            in_app_price_string = hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]").extract()[0].replace(',', '')
-            if '~' not in in_app_price_string:
-                item['inapp_price_min'] = int(StringUtil().getPureNumber(in_app_price_string.split('₩')[1]))
+        in_app_price_list = hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]")
+        in_app_price_min = '0'
+        in_app_price_max = '0'
+        if len(in_app_price_list) > 0:
+            in_app_price = in_app_price_list.extract()[0]
+            if '~' not in in_app_price:
+                in_app_price_min = in_app_price.split('₩')[1]
             else:
-                item['inapp_price_min'] = int(StringUtil().getPureNumber(in_app_price_string.split('~')[0].split('₩')[1]))
-                item['inapp_price_max'] = int(StringUtil().getPureNumber(in_app_price_string.split('~')[1].split('₩')[1]))
-        else:
-            item['inapp_price_min'] = 0
-            item['inapp_price_max'] = 0
+                in_app_price_min = in_app_price.split('~')[0].split('₩')[1]
+                in_app_price_max = in_app_price.split('~')[1].split('₩')[1]
+
+        item['inapp_price_min'] = StringUtil.parseNumber(in_app_price_min)
+        item['inapp_price_max'] = StringUtil.parseNumber(in_app_price_max)
 
         items.append(item)
         return items
-
