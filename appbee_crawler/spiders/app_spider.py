@@ -4,10 +4,16 @@ from scrapy.selector import Selector
 from appbee_crawler.app_items import AppItem
 from appbee_crawler.util.date_util import DateUtil
 
-class FreeAppSpider(scrapy.Spider):
-    name = "FreeAppSpider"
+class AppSpider(scrapy.Spider):
+    name = "AppSpider"
     allowed_domains = ["play.google.com"]
-    start_urls = "https://play.google.com/store/apps/collection/topselling_free"
+    start_urls = ["https://play.google.com/store/apps/collection/topselling_free",
+                    "https://play.google.com/store/apps/collection/topselling_paid",
+                    "https://play.google.com/store/apps/collection/topgrossing",
+                    "https://play.google.com/store/apps/category/GAME/collection/topselling_free",
+                    "https://play.google.com/store/apps/category/GAME/collection/topselling_paid",
+                    "https://play.google.com/store/apps/category/GAME/collection/topgrossing"]
+
     frmdata = {
         'start': '0',
         'num': '100',
@@ -17,9 +23,14 @@ class FreeAppSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        return [scrapy.FormRequest(self.start_urls, method='POST', callback=self.after_app_parsing)]
+        return_list = []
 
-    def after_app_parsing(self, response):
+        for url in self.start_urls:
+            return_list.append(scrapy.FormRequest(url, method='POST', callback=self.after_app_list_parsing))
+
+        return return_list
+
+    def after_app_list_parsing(self, response):
         hxs = Selector(response)
         selects = hxs.xpath("//div[@class='details']/a[@class='card-click-target']")
         for sel in selects:
@@ -42,10 +53,16 @@ class FreeAppSpider(scrapy.Spider):
         item['contents_rating'] = hxs.xpath("//div[@itemprop='contentRating']/text()[1]").extract()[0]
         item['developer'] = hxs.xpath("//a[@class='document-subtitle primary']/span[@itemprop='name']//text()[1]").extract()[0]
         item['description'] = ''.join(hxs.xpath("//div[@itemprop='description']/div/text()").extract())
-        item['app_price'] = 0
 
-        inappListSize = len(hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]"))
-        if inappListSize > 0:
+        appPrice = hxs.xpath("//div[@class='info-container']//button[@class='price buy id-track-click id-track-impression']/span[last()]/text()[1]").extract()[0].split('₩')
+
+        if len(appPrice) == 2:
+            item['app_price'] = appPrice[1].replace(',', '')
+        else:
+            item['app_price'] = 0
+
+        inappPriceListSize = len(hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]"))
+        if inappPriceListSize > 0:
             in_app_price_string = hxs.xpath("//div[@class = 'content' and ../div/text()[1] = '인앱 상품']/text()[1]").extract()[0].replace(',', '')
             if '~' not in in_app_price_string:
                 item['inapp_price_min'] = in_app_price_string.split('₩')[1]

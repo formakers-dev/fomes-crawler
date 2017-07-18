@@ -10,7 +10,7 @@ class AppItem(scrapy.Item):
     reviews = scrapy.Field()
     updated = scrapy.Field()
     category_id = scrapy.Field()
-    contents_rating = scrapy.Field()
+    contents_rating = scrapy.Field()    # 컨텐츠 등급
     developer = scrapy.Field()
     description = scrapy.Field()
     app_price = scrapy.Field()

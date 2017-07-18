@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from appbee_crawler.repository.setup import Category, App, Setup
 from appbee_crawler.spiders.category_spider import CategoryItem
-from appbee_crawler.spiders.free_app_spider import AppItem
+from appbee_crawler.spiders.app_spider import AppItem
 
 class AppbeeCrawlerPipeline(object):
     def __init__(self):
