@@ -7,8 +7,8 @@ class AppItem(scrapy.Item):
     star = scrapy.Field()
     installs_min = scrapy.Field()
     installs_max = scrapy.Field()
-    reviews = scrapy.Field()
-    updated = scrapy.Field()
+    review_count = scrapy.Field()
+    updated_date = scrapy.Field()
     category_id = scrapy.Field()
     contents_rating = scrapy.Field()    # 컨텐츠 등급
     developer = scrapy.Field()

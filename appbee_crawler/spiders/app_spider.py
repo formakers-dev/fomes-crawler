@@ -51,14 +51,14 @@ class AppSpider(scrapy.Spider):
             return None
 
         item['app_name'] = appName[0]
-        item['star'] = hxs.xpath("//div[@class='score']/text()[1]").extract()[0]
+        item['star'] = float(hxs.xpath("//div[@class='score']/text()[1]").extract()[0])
 
         installs = StringUtil().getPureNumber(hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0])
-        item['installs_min'] = installs.split('-')[0]
-        item['installs_max'] = installs.split('-')[1]
+        item['installs_min'] = int(installs.split('-')[0])
+        item['installs_max'] = int(installs.split('-')[1])
 
-        item['reviews'] = hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0].replace(',', '')
-        item['updated'] = DateUtil().get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0].replace(' ', ''))
+        item['review_count'] = int(hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0].replace(',', ''))
+        item['updated_date'] = DateUtil().get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0].replace(' ', ''))
         item['category_id'] = hxs.xpath("//span[@itemprop='genre']/text()[1]").extract()[0]
         item['contents_rating'] = hxs.xpath("//div[@itemprop='contentRating']/text()[1]").extract()[0]
         item['developer'] = hxs.xpath("//a[@class='document-subtitle primary']/span[@itemprop='name']//text()[1]").extract()[0]
