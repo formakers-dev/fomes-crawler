@@ -23,10 +23,11 @@ class AppbeeCrawlerPipeline(object):
     def process_item(self, item, spider):
         if type(item) is CategoryItem:
             category = Category(**item)
-            self.db_session.add(category)
+            self.db_session.merge(category)
         elif type(item) is AppItem:
             app = App(**item)
-            self.db_session.add(app)
+            self.db_session.merge(app)
+
         self.db_session.commit()
         return item
 

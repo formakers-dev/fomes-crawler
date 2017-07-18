@@ -16,8 +16,3 @@ class AppItem(scrapy.Item):
     app_price = scrapy.Field()
     inapp_price_min = scrapy.Field()
     inapp_price_max = scrapy.Field()
-
-
-
-
-
