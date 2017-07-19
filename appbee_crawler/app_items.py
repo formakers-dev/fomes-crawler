@@ -9,7 +9,10 @@ class AppItem(scrapy.Item):
     installs_max = scrapy.Field()
     review_count = scrapy.Field()
     updated_date = scrapy.Field()
-    category_id = scrapy.Field()
+    category1_id = scrapy.Field()
+    category1_name = scrapy.Field()
+    category2_id = scrapy.Field()
+    category2_name = scrapy.Field()
     contents_rating = scrapy.Field()    # 컨텐츠 등급
     developer = scrapy.Field()
     description = scrapy.Field()

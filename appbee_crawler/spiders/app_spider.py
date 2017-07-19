@@ -79,7 +79,19 @@ class AppSpider(scrapy.Spider):
 
         item['review_count'] = StringUtil.parseNumber(hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()[0])
         item['updated_date'] = DateUtil.get_date_format(hxs.xpath("//div[@itemprop='datePublished']/text()[1]").extract()[0])
-        item['category_id'] = hxs.xpath("//span[@itemprop='genre']/text()[1]").extract()[0]
+
+        category_ids = hxs.xpath("//a[@class='document-subtitle category']/@href[1]").extract()
+        category_names = hxs.xpath("//span[@itemprop='genre']/text()[1]").extract()
+        item['category1_id'] = category_ids[0]
+        item['category1_name'] = category_names[0]
+
+        if len(category_ids) > 1:
+            item['category2_id'] = category_ids[1]
+            item['category2_name'] = category_names[1]
+        else:
+            item['category2_id'] = ''
+            item['category2_name'] = ''
+
         item['contents_rating'] = hxs.xpath("//div[@itemprop='contentRating']/text()[1]").extract()[0]
         item['developer'] = hxs.xpath("//a[@class='document-subtitle primary']/span[@itemprop='name']//text()[1]").extract()[0]
         item['description'] = ''.join(hxs.xpath("//div[@itemprop='description']/div/text()").extract())
