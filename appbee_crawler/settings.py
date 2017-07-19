@@ -65,7 +65,7 @@ DOWNLOAD_DELAY = 10
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'appbee_crawler.pipelines.AppbeeCrawlerPipeline': 300,
+    'appbee_crawler.pipelines.AppBeeCrawlerPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

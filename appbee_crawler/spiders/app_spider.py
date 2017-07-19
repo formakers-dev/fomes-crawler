@@ -9,27 +9,28 @@ from appbee_crawler.util.string_util import StringUtil
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
-    start_urls = ["https://play.google.com/store/apps/collection/topselling_free",
-                    "https://play.google.com/store/apps/collection/topselling_paid",
-                    "https://play.google.com/store/apps/collection/topgrossing",
-                    "https://play.google.com/store/apps/category/GAME/collection/topselling_free",
-                    "https://play.google.com/store/apps/category/GAME/collection/topselling_paid",
-                    "https://play.google.com/store/apps/category/GAME/collection/topgrossing"]
+    start_urls = ["https://play.google.com/store/apps/collection/topselling_free?authuser=0",
+                    "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
+                    "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
+                    "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
+                    "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
+                    "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0"]
 
-    frmdata = {
-        'start': '0',
-        'num': '100',
-        'numChildren': '0',
-        'ipf': '1',
-        'xhr': '1'
-    }
+    def get_form_data(self, page_number):
+        return {
+            'start': str(page_number*60),
+            'num': '60',
+            'numChildren': '0',
+            'ipf': '1',
+            'xhr': '1'
+        }
 
     def start_requests(self):
         return_list = []
 
         for url in self.start_urls:
-            return_list.append(scrapy.FormRequest(url, method='POST', callback=self.after_app_list_parsing))
-
+            for page_number in range(0, 9):
+                return_list.append(scrapy.FormRequest(url=url, formdata=self.get_form_data(page_number), callback=self.after_app_list_parsing))
         return return_list
 
     def after_app_list_parsing(self, response):
