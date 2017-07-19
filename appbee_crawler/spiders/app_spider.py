@@ -5,6 +5,7 @@ from appbee_crawler.app_items import AppItem
 from appbee_crawler.util.date_util import DateUtil
 from appbee_crawler.util.string_util import StringUtil
 
+
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
