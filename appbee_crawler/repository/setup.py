@@ -37,4 +37,4 @@ class App(Base):
 
     def __repr__(self):
         return "<App(package_name = '%s',app_name = '%s' ,app_price = '%s' ,category_id = '%s' ,contents_rating = '%s',description = '%s',developer = '%s',star = '%s',installsMin = '%s',installsMax = '%s',review_count = '%s', updated_date = '%s')>" \
-               % (self.package_name, self.app_name, self.app_price, self.category_id, self.contents_rating, self.description, self.developer, self.star, self.installs_min, self.installs_max, self.review_count, self.updated_date_date)
+               % (self.package_name, self.app_name, self.app_price, self.category_id, self.contents_rating, self.description, self.developer, self.star, self.installs_min, self.installs_max, self.review_count, self.updated_date)

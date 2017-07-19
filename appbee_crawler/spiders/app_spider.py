@@ -36,12 +36,30 @@ class AppSpider(scrapy.Spider):
         selects = hxs.xpath("//div[@class='details']/a[@class='card-click-target']")
         for sel in selects:
             package_name = sel.xpath("@href").extract()[0].split('=')[1]
-            request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name, callback=self.after_parsing, meta = {'package_name' : package_name})
+            request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name,
+                                     callback=self.after_parsing, meta={'package_name': package_name})
             yield request
 
     def after_parsing(self, response):
+        yield self.parse_app_item(response)
+
+        generator = self.request_similar_apps(response)
+        for request in generator:
+            yield request
+
+    def request_similar_apps(self, response):
         hxs = Selector(response)
-        items = []
+
+        # 유사한 앱 목록
+        selects = hxs.xpath("//div[@class='id-cluster-container details-section recommendation']//a[@class='title']")
+        for sel in selects:
+            similar_package_name = sel.xpath("@href").extract()[0].split('=')[1]
+            request = scrapy.Request('https://play.google.com/store/apps/details?id=' + similar_package_name,
+                                     callback=self.after_parsing, meta={'package_name': similar_package_name})
+            yield request
+
+    def parse_app_item(self, response):
+        hxs = Selector(response)
         item = AppItem()
         item['package_name'] = response.meta.get('package_name')
 
@@ -85,5 +103,5 @@ class AppSpider(scrapy.Spider):
         item['inapp_price_min'] = StringUtil.parseNumber(in_app_price_min)
         item['inapp_price_max'] = StringUtil.parseNumber(in_app_price_max)
 
-        items.append(item)
-        return items
+        return item
+
