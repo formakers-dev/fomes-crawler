@@ -4,29 +4,28 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-from sqlalchemy.orm import sessionmaker
-from appbee_crawler.repository.setup import Category, App, Setup
+import os
+
+from pymongo import MongoClient
 from appbee_crawler.spiders.app_spider import AppItem
 from appbee_crawler.spiders.category_spider import CategoryItem
 
 
 class AppBeeCrawlerPipeline(object):
     def __init__(self):
-        self.engine = Setup().getEngine()
+        print('### init Pipeline ###')
 
     def open_spider(self, spider):
-        Session = sessionmaker(bind=self.engine)
-        self.db_session = Session()
+        self.mongo_client = MongoClient(os.environ['MONGO_URL'])
+        self.db = self.mongo_client['appbee']
+
+    def close_spider(self, spider):
+        self.mongo_client.close()
 
     def process_item(self, item, spider):
         if type(item) is CategoryItem:
-            category = Category(**item)
-            self.db_session.merge(category)
-            self.db_session.commit()
+            self.db.categories.update({'id':item['id']}, dict(item), upsert=True)
         elif type(item) is AppItem:
-            app = App(**item)
-            self.db_session.merge(app)
-            self.db_session.commit()
+            self.db.apps.update({'package_name':item['package_name']}, dict(item), upsert=True)
 
         return item
-
