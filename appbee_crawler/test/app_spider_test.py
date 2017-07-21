@@ -49,6 +49,26 @@ class TestAppSpider(unittest.TestCase):
         self.assertEqual(result['inapp_price_min'], 0)
         self.assertEqual(result['inapp_price_max'], 0)
 
+    def test_parse_app_item_with_no_score_app_success_response(self):
+        response = fake_response('./data/no_score_app_data.html')
+        result = self.spider.parse_app_item(response)
+        self.assertEqual(result['app_name'], 'Shooting Champ')
+        self.assertEqual(result['app_price'], 0)
+        self.assertEqual(result['category1_id'], '/store/apps/category/GAME_SPORTS')
+        self.assertEqual(result['category1_name'], '스포츠')
+        self.assertEqual(result['category2_id'], '')
+        self.assertEqual(result['category2_name'], '')
+        self.assertEqual(result['contents_rating'], '만 3세 이상')
+        self.assertTrue('1대1로 과녁을' in result['description'])
+        self.assertEqual(result['developer'], 'Nurida')
+        self.assertEqual(result['star'], 0)
+        self.assertEqual(result['installs_min'], 5)
+        self.assertEqual(result['installs_max'], 10)
+        self.assertEqual(result['review_count'], 0)
+        self.assertEqual(result['updated_date'], "20170717")
+        self.assertEqual(result['inapp_price_min'], 1200)
+        self.assertEqual(result['inapp_price_max'], 120000)
+
     def test_parse_app_item_with_paid_app_failure_response(self):
         response = fake_response('./data/empty_data.html')
         result = self.spider.parse_app_item(response)
