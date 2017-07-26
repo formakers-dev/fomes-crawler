@@ -126,5 +126,8 @@ class AppSpider(scrapy.Spider):
         item['inapp_price_min'] = StringUtil.parseNumber(in_app_price_min)
         item['inapp_price_max'] = StringUtil.parseNumber(in_app_price_max)
 
+        similar_app_hreps = hxs.xpath("//div[@class='id-cluster-container details-section recommendation']//div[@class='card no-rationale square-cover apps small' and  ../../h1/a/text()[1] = '유사한 콘텐츠']//a[@class='title']/@href").extract()
+        item['similar_apps'] = list(map(lambda hrep: hrep.split("=")[1], similar_app_hreps))
+
         return item
 
