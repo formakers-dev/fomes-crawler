@@ -28,6 +28,7 @@ class TestAppSpider(unittest.TestCase):
         self.assertEqual(result['updated_date'], "20170714")
         self.assertEqual(result['inapp_price_min'], 1000)
         self.assertEqual(result['inapp_price_max'], 100000)
+        self.assertEqual(result['similar_apps'][0], "com.disney.moanaislandlife_goo")
 
     def test_parse_app_item_with_paid_app_success_response(self):
         response = fake_response('./data/paid_app_data.html')
@@ -48,9 +49,10 @@ class TestAppSpider(unittest.TestCase):
         self.assertEqual(result['updated_date'], "20161223")
         self.assertEqual(result['inapp_price_min'], 0)
         self.assertEqual(result['inapp_price_max'], 0)
+        self.assertEqual(result['similar_apps'][0], "com.lunatouch.eyefilter.classic")
 
-    def test_parse_app_item_with_no_score_app_success_response(self):
-        response = fake_response('./data/no_score_app_data.html')
+    def test_parse_app_item_with_no_score_and_no_similar_app_success_response(self):
+        response = fake_response('./data/no_score_no_similar_app_data.html')
         result = self.spider.parse_app_item(response)
         self.assertEqual(result['app_name'], 'Shooting Champ')
         self.assertEqual(result['app_price'], 0)
@@ -68,6 +70,7 @@ class TestAppSpider(unittest.TestCase):
         self.assertEqual(result['updated_date'], "20170717")
         self.assertEqual(result['inapp_price_min'], 1200)
         self.assertEqual(result['inapp_price_max'], 120000)
+        self.assertEqual(len(result['similar_apps']), 0)
 
     def test_parse_app_item_with_paid_app_failure_response(self):
         response = fake_response('./data/empty_data.html')
