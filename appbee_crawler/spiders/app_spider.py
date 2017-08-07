@@ -78,9 +78,14 @@ class AppSpider(scrapy.Spider):
         else:
             item['star'] = 0
 
-        installs = hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()[0].split('-')
-        item['installs_min'] = StringUtil.parseNumber(installs[0])
-        item['installs_max'] = StringUtil.parseNumber(installs[1])
+        installs = hxs.xpath("//div[@itemprop='numDownloads']/text()[1]").extract()
+        if len(installs) > 0:
+            installs_parse = installs[0].split('-')
+            item['installs_min'] = StringUtil.parseNumber(installs_parse[0])
+            item['installs_max'] = StringUtil.parseNumber(installs_parse[1])
+        else:
+            item['installs_min'] = 0
+            item['installs_max'] = 5
 
         review_count = hxs.xpath("//span[@class='reviews-num']/text()[1]").extract()
         if(len(review_count) > 0):

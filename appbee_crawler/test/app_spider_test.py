@@ -90,5 +90,11 @@ class TestAppSpider(unittest.TestCase):
         next(generator)
         self.assertRaises(StopIteration, next, generator)
 
+    def test_parse_app_item_when_no_installs(self):
+        response = fake_response('./data/paid_app_data_no_installs.html')
+        result = self.spider.parse_app_item(response)
+        self.assertEqual(result['installs_min'], 0)
+        self.assertEqual(result['installs_max'], 5)
+
 if __name__ == '__main__':
     unittest.main()
