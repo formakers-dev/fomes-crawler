@@ -57,7 +57,8 @@ class AppSpider(scrapy.Spider):
         for sel in selects:
             similar_package_name = sel.xpath("@href").extract()[0].split('=')[1]
             request = scrapy.Request('https://play.google.com/store/apps/details?id=' + similar_package_name,
-                                     callback=self.after_parsing, meta={'package_name': similar_package_name})
+                                     callback=self.after_parsing, meta={'package_name': similar_package_name,
+                                                                        'priority': -1})
             yield request
 
     def parse_app_item(self, response):
