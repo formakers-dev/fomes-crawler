@@ -10,15 +10,19 @@ class UncrawledAppSpider(scrapy.Spider):
     allowed_domains = ["play.google.com"]
 
     def start_requests(self):
-        app_list = DBManager.select_uncrawled_apps()
+        user_apps_list = DBManager.select_user_apps()
         request_list = []
-        for app in app_list:
-            request_list.append(scrapy.Request('https://play.google.com/store/apps/details?id=' + app['packageName'],
-                                     callback=self.after_parsing, meta={'package_name': app['packageName']}))
+        for user_apps in user_apps_list:
+            apps = user_apps['apps']
+            for app in apps:
+                packageName = app['packageName']
+                crawled_apps = DBManager.select_apps(packageName)
+                if crawled_apps.count() <= 0:
+                    request_list.append(scrapy.Request('https://play.google.com/store/apps/details?id=' + packageName,
+                                                                                    callback=self.after_parsing, meta={'package_name': packageName}))
         return request_list
 
     def after_parsing(self, response):
         yield AppItemParser.parse(response)
-        DBManager.delete_uncrawled_app(response.meta.get('package_name'))
 
 

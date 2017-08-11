@@ -39,3 +39,14 @@ class DBManager(object):
         db = cls.get_db()
         db['categories'].update({'id':item['id']}, dict(item), upsert=True)
 
+    @classmethod
+    def select_apps(cls, package_name):
+        db = cls.get_db()
+        docs = db['apps'].find({'package_name': package_name})
+        return docs
+
+    @classmethod
+    def select_user_apps(cls):
+        db = cls.get_db()
+        docs = db['user-apps'].find()
+        return docs
