@@ -16,5 +16,6 @@ class AppBeeCrawlerPipeline(object):
             DBManager.upsert_categories(item)
         elif type(item) is AppItem:
             DBManager.upsert_apps(item)
+            DBManager.delete_uncrawled_app(item['packageName'])
 
         return item
