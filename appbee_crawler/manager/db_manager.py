@@ -32,7 +32,7 @@ class DBManager(object):
     @classmethod
     def upsert_apps(cls, item):
         db = cls.get_db()
-        db['apps'].update({'package_name':item['package_name']}, dict(item), upsert=True)
+        db['apps'].update({'packageName':item['packageName']}, dict(item), upsert=True)
 
     @classmethod
     def upsert_categories(cls, item):
@@ -42,7 +42,7 @@ class DBManager(object):
     @classmethod
     def select_apps(cls, package_name):
         db = cls.get_db()
-        docs = db['apps'].find({'package_name': package_name})
+        docs = db['apps'].find({'packageName': package_name})
         return docs
 
     @classmethod

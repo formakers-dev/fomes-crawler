@@ -10,7 +10,7 @@ class AppItemParser(object):
     def parse(cls, response):
         hxs = Selector(response)
         item = AppItem()
-        item['packageName'] = response.meta.get('package_name')
+        item['packageName'] = response.meta.get('packageName')
 
         appName = hxs.xpath("//div[@class='id-app-title']/text()[1]").extract()
 

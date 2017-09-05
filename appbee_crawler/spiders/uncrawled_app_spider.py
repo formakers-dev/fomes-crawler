@@ -19,7 +19,7 @@ class UncrawledAppSpider(scrapy.Spider):
                 crawled_apps = DBManager.select_apps(packageName)
                 if crawled_apps.count() <= 0:
                     request_list.append(scrapy.Request('https://play.google.com/store/apps/details?id=' + packageName,
-                                                                                    callback=self.after_parsing, meta={'package_name': packageName}))
+                                                                                    callback=self.after_parsing, meta={'packageName': packageName}))
         return request_list
 
     def after_parsing(self, response):
