@@ -81,4 +81,11 @@ class AppItemParser(object):
         similar_app_hreps = hxs.xpath("//div[@class='id-cluster-container details-section recommendation']//div[@class='card no-rationale square-cover apps small' and  ../../h1/a/text()[1] = '유사한 콘텐츠']//a[@class='title']/@href").extract()
         item['similarApps'] = list(map(lambda hrep: hrep.split("=")[1], similar_app_hreps))
 
+        iconPathStr = hxs.xpath("//div[@class = 'cover-container']/img[@class = 'cover-image']/@src").extract()[0]
+
+        if len(iconPathStr) > 0:
+            item['iconUrl'] = 'https:' + iconPathStr
+        else:
+            item['iconUrl'] = ''
+
         return item

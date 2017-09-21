@@ -28,6 +28,7 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['inappPriceMin'], 1000)
         self.assertEqual(result['inappPriceMax'], 100000)
         self.assertEqual(result['similarApps'][0], "com.disney.moanaislandlife_goo")
+        self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com/sPn6xnEWTfCNKJAu73s6LZw5-nzy584LbBsfkpzcD49NsyZQ75SANuuGTXDmaQp3QXY=w300-rw")
 
     def test_parse_app_item_with_paid_app_success_response(self):
         response = fake_response('./data/paid_app_data.html')
@@ -49,6 +50,7 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['inappPriceMin'], 0)
         self.assertEqual(result['inappPriceMax'], 0)
         self.assertEqual(result['similarApps'][0], "com.lunatouch.eyefilter.classic")
+        self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com/30K7UPWRRA6p0-fNJjbGM2HlX1PYpcnxKGUU3f4mruRn0LqHrlZ0ANOSoMGdNDWRBMY=w300-rw")
 
     def test_parse_app_item_with_no_score_and_no_similar_app_success_response(self):
         response = fake_response('./data/no_score_no_similar_app_data.html')
@@ -70,6 +72,7 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['inappPriceMin'], 1200)
         self.assertEqual(result['inappPriceMax'], 120000)
         self.assertEqual(len(result['similarApps']), 0)
+        self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com/JSW1CJ3aJDvWh-schLVT0DTwY3EpoDwady8jnMusrHMk1zse2k0eENc5XmyQBcoMxAc=w300-rw")
 
     def test_parse_app_item_with_paid_app_failure_response(self):
         response = fake_response('./data/empty_data.html')

@@ -20,3 +20,4 @@ class AppItem(scrapy.Item):
     inappPriceMin = scrapy.Field()
     inappPriceMax = scrapy.Field()
     similarApps = scrapy.Field()
+    iconUrl = scrapy.Field()   # icon path
