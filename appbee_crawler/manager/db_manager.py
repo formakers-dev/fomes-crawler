@@ -9,7 +9,7 @@ class DBManager(object):
     @classmethod
     def get_db(cls, new=False):
         if new or not cls.connection:
-            cls.connection = MongoClient(os.environ['MONGO_URL'])
+            cls.connection = MongoClient(os.environ['RELEASE_MONGO_URL'])
         if new or not cls.db:
             cls.db = cls.connection.appbee
         return cls.db
