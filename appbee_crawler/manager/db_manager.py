@@ -21,8 +21,15 @@ class DBManager(object):
     @classmethod
     def select_uncrawled_apps(cls):
         db = cls.get_db()
-        docs = db['uncrawled-apps'].find()
+        docs = db['uncrawled-apps'].find({'errCode': {'$exists': False}})
+        # docs = db['uncrawled-apps'].find()
         return docs
+
+    @classmethod
+    def update_uncrawled_apps(cls, package_name, error_code):
+        db = cls.get_db();
+
+        db['uncrawled-apps'].update_one({'packageName': package_name}, {"$set": {'errCode': error_code}}, upsert=False)
 
     @classmethod
     def delete_uncrawled_app(cls, package_name):
