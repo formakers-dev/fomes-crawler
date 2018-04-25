@@ -9,9 +9,11 @@ class AppBeeCrawlerPipeline(object):
         print('### init Pipeline ###')
 
     def close_spider(self, spider):
+        print('### Close Spider ###')
         DBManager.close()
 
     def process_item(self, item, spider):
+        print('### Process Item ###')
         if type(item) is CategoryItem:
             DBManager.upsert_categories(item)
         elif type(item) is AppItem:
