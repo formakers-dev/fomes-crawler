@@ -2,6 +2,7 @@
 import os
 from pymongo import MongoClient
 
+
 class DBManager(object):
     db = None
     connection = None
@@ -42,13 +43,13 @@ class DBManager(object):
     def upsert_apps(cls, item):
         print('### Upsert Apps ### ' + str(item['packageName']))
         db = cls.get_db()
-        db['apps'].update({'packageName':item['packageName']}, dict(item), upsert=True)
+        db['apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
 
     @classmethod
     def upsert_categories(cls, item):
         print('### Upsert Categories ### ' + str(item['id']))
         db = cls.get_db()
-        db['categories'].update({'id':item['id']}, dict(item), upsert=True)
+        db['categories'].update({'id': item['id']}, dict(item), upsert=True)
 
     @classmethod
     def select_apps(cls, package_name):

@@ -9,15 +9,16 @@ class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
     start_urls = ["https://play.google.com/store/apps/collection/topselling_free?authuser=0",
-                    "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
-                    "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
-                    "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
-                    "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
-                    "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0"]
+                  "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
+                  "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
+                  "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
+                  "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
+                  "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0"]
 
-    def get_form_data(self, page_number):
+    @staticmethod
+    def get_form_data(page_number):
         return {
-            'start': str(page_number*60),
+            'start': str(page_number * 60),
             'num': '60',
             'numChildren': '0',
             'ipf': '1',
@@ -29,7 +30,8 @@ class AppSpider(scrapy.Spider):
 
         for url in self.start_urls:
             for page_number in range(0, 9):
-                return_list.append(scrapy.FormRequest(url=url, formdata=self.get_form_data(page_number), callback=self.after_app_list_parsing))
+                return_list.append(scrapy.FormRequest(url=url, formdata=self.get_form_data(page_number),
+                                                      callback=self.after_app_list_parsing))
         return return_list
 
     def after_app_list_parsing(self, response):
@@ -52,12 +54,12 @@ class AppSpider(scrapy.Spider):
         hxs = Selector(response)
 
         # 유사한 앱 목록
-        selects = hxs.xpath("//div[@class='id-cluster-container details-section recommendation']//a[@class='title']")
+        selects = hxs.xpath("//div[@class='WHE7ib mpg5gc']//div[@class='b8cIId ReQCgd Q9MA7b']/a")
+
+        # TODO: 유사앱의 packageName을 저장하는 수는 상관없으나, 크롤링하는 수는 제한해야할 것으로 보임.
         for sel in selects:
             similar_package_name = sel.xpath("@href").extract()[0].split('=')[1]
             request = scrapy.Request('https://play.google.com/store/apps/details?id=' + similar_package_name,
                                      callback=self.after_parsing, meta={'packageName': similar_package_name,
                                                                         'priority': -1})
             yield request
-
-

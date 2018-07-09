@@ -3,6 +3,7 @@ import scrapy
 from appbee_crawler.category_items import CategoryItem
 from scrapy.selector import Selector
 
+
 class CategorySpider(scrapy.Spider):
     name = "CategorySpider"
     allowed_domains = ["play.google.com"]
@@ -10,7 +11,7 @@ class CategorySpider(scrapy.Spider):
 
     def parse(self, response):
         hxs = Selector(response)
-        selects = hxs.xpath("//div[@id='action-dropdown-children-카테고리']//a[@href != '#']")
+        selects = hxs.xpath("//a[@class='child-submenu-link']")
         items = []
         for sel in selects:
             item = CategoryItem()
