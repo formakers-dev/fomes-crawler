@@ -13,7 +13,9 @@ class AppSpider(scrapy.Spider):
                   "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
                   "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
                   "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0"]
+                  "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0",
+                  "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
+                  "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"]
 
     @staticmethod
     def get_form_data(page_number):
