@@ -60,11 +60,11 @@ class AppItemParser(object):
         category_ids = category_selector.xpath("@href").extract()
         category_names = category_selector.xpath("text()").extract()
 
-        item['categoryId1'] = category_ids[0][category_ids[0].find("/store"):]
+        item['categoryId1'] = category_ids[0].split('/')[-1]
         item['categoryName1'] = category_names[0]
 
         if len(category_ids) > 1:
-            item['categoryId2'] = category_ids[1][category_ids[1].find("/store"):]
+            item['categoryId2'] = category_ids[1].split('/')[-1]
             item['categoryName2'] = category_names[1]
         else:
             item['categoryId2'] = ''

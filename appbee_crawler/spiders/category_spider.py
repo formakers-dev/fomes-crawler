@@ -15,7 +15,7 @@ class CategorySpider(scrapy.Spider):
         items = []
         for sel in selects:
             item = CategoryItem()
-            item['id'] = sel.xpath("@href").extract()[0]
+            item['id'] = sel.xpath("@href").extract()[0].split('/')[-1]
             item['title'] = sel.xpath("@title").extract()[0]
             items.append(item)
         return items
