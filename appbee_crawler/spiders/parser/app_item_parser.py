@@ -112,7 +112,7 @@ class AppItemParser(object):
         else:
             item['iconUrl'] = ''
 
-        screen_shot_urls = hxs.xpath("//button/img[@itemprop='image']/@src").extract()
-        item['screenShotUrls'] = screen_shot_urls
+        image_urls = hxs.xpath("//button/img[@itemprop='image']/@src").extract()
+        item['imageUrls'] = image_urls
 
         return item

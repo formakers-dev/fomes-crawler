@@ -14,7 +14,7 @@ class AppItem(scrapy.Item):
     categoryId1 = scrapy.Field()
     categoryName1 = scrapy.Field()
     contentsRating = scrapy.Field()    # 컨텐츠 등급
-    screenShotUrls = scrapy.Field()
+    imageUrls = scrapy.Field()
 
     # 항상 페이지에 포함되나 형태가 달라지는 정보
     installsMin = scrapy.Field()
