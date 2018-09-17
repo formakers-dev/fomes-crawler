@@ -40,6 +40,32 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com/OJ12eDDC6zShVguWb2mBS"
                                             "--cdUDRy4BzyqR_BfTy8kG5ibNwsbYbibNUnEW-hxUMlUM=s180")
 
+        self.assertEqual(len(result['screenShotUrls']), 24);
+        self.assertEqual(result['screenShotUrls'][0], "https://lh3.googleusercontent.com/TVyiUM_oGq1IRvMWdQNA-mr8Vl4WdkEqdiObLfYadyyF9OoTHSZT8AnsvYFFxffkTw=w720-h310")
+        self.assertEqual(result['screenShotUrls'][1], "https://lh3.googleusercontent.com/JWAY26HZZwFGW5LwgGJaqYe5CXGePh_oLNPtRwNGZnLpa8n-MDnVeEGs0y9ALAMyNv4=w720-h310")
+        self.assertEqual(result['screenShotUrls'][2], "https://lh3.googleusercontent.com/voBPYesTu9PKPvOo8VKQc15YLO3hhRO-zSr-F-d5TlJcaJllI3QFKPdoEcMpxq5Xaf4=w720-h310")
+        self.assertEqual(result['screenShotUrls'][3], "https://lh3.googleusercontent.com/_NumDCQqLmaIyPgARfZgq8aCDX95HuGrEipFmFO0OKpqCtaipewaR26dPYxe7uMJyE4=w720-h310")
+        self.assertEqual(result['screenShotUrls'][4], "https://lh3.googleusercontent.com/YBIrXqymvZd6Ku-0OR37ZL3x5hgASgQSyYRfksw-NdtsDxX62axU69PSAm3sNhMjeQ=w720-h310")
+        self.assertEqual(result['screenShotUrls'][5], "https://lh3.googleusercontent.com/TN8pCWhmDvgeS3j7TmSjf8dik45RZ5neAyBHPey266ohEGnT9jKxf4DKi09MK57PtA0=w720-h310")
+        self.assertEqual(result['screenShotUrls'][6], "https://lh3.googleusercontent.com/IHwdzTtjwy328s7ZROKlD6BrYd_rz4AdkqwVyndh7FYrmPKwvO7YAsUjJTx18v0-sEN7=w720-h310")
+        self.assertEqual(result['screenShotUrls'][7], "https://lh3.googleusercontent.com/xAmO99nYMXHoaVEiDBjSnR0JoqNCPOVAhuZu_OuhzB34G4tTXMf7HEsVVmmXwW99Tw=w720-h310")
+        self.assertEqual(result['screenShotUrls'][8], "https://lh3.googleusercontent.com/c3jznmIFv1YW0GfNpgSoN4JqzHjlx5xRT0FOJqWTMOUJ1C3pCNTaV3CbRv09JrRgDQY=w720-h310")
+        self.assertEqual(result['screenShotUrls'][9], "https://lh3.googleusercontent.com/IhC4kiQV9lWDFY9A8RB1lT0iLddIqgDMPrhhEQ7RfgbgMyi4aqCd9yaWcanzbh7j5A=w720-h310")
+        self.assertEqual(result['screenShotUrls'][10], "https://lh3.googleusercontent.com/dcJJz-gnSENQY4NIXFMj6R_dILOLxZeCF_sseR1GYH_uk72Pw6TZmdrc_AURKeKsAvaC=w720-h310")
+        self.assertEqual(result['screenShotUrls'][11], "https://lh3.googleusercontent.com/rNVIv8buO5wQ2odVI7PPbkLvYzRg7weNBFrnYqUsSyrU7WAS_yhWkXLmwVudIzUnwM0=w720-h310")
+        self.assertEqual(result['screenShotUrls'][12], "https://lh3.googleusercontent.com/ebfMz7010t309YhdfNE3-vQU-BmJNWEzBqfWEVycTD5SVZmyvw1tZnyKAksG8uoK7J28=w720-h310")
+        self.assertEqual(result['screenShotUrls'][13], "https://lh3.googleusercontent.com/3WWHYXMLf1CLheQdD7UMUvddmzpwldG_aA3FG49BLSXtePZFeHiV4211dkQtnAlOM1TN=w720-h310")
+        self.assertEqual(result['screenShotUrls'][14], "https://lh3.googleusercontent.com/bifICuleBjwY9x508VD8DCvmt6gRQw2YTsaasIy9fz1F1epKW2OQmcu_utBSyluW2aT0=w720-h310")
+        self.assertEqual(result['screenShotUrls'][15], "https://lh3.googleusercontent.com/2r2hFo2a63OkDeKRLJzIGPT44eP0107i1F_MRAuIsjiuqraGMjxdYcgCBaWWpcMBAcw=w720-h310")
+        self.assertEqual(result['screenShotUrls'][16], "https://lh3.googleusercontent.com/-KWWPfrJb50rtUUWqJqPkvgU21bdHh6pRtfaNofNlkRniDGdnxC3Z9WkuF6E0INMfEA=w720-h310")
+        self.assertEqual(result['screenShotUrls'][17], "https://lh3.googleusercontent.com/xVIsXty8gLxgLCqRjYACP_jSeo7VHCqDPy5fZQ-vYhNYCddXMt4VAYwKtW0FFYAP78Y=w720-h310")
+        self.assertEqual(result['screenShotUrls'][18], "https://lh3.googleusercontent.com/D-fN3xxkJEQgjJO52243qW2HqZ30bK8_6eV5Pf-Yv2CEs1aXYRwEFq2sy82kx9n5Vkgy=w720-h310")
+        self.assertEqual(result['screenShotUrls'][19], "https://lh3.googleusercontent.com/O_2aSOHLL7ThYGQNWeeNLUD1579yA7v3EOROpSTkG5lE2Yf7cNyEmRVAttquqQf3T18=w720-h310")
+        self.assertEqual(result['screenShotUrls'][20], "https://lh3.googleusercontent.com/V0t2RupUijDJdcbNJpqlBmQPKTz42rnQo5BaCAcIwyHpt_L6ELG47b53qBZzUQIU0w=w720-h310")
+        self.assertEqual(result['screenShotUrls'][21], "https://lh3.googleusercontent.com/dj5Pjackv08ZgoXqP-TFhXuydT46Lfo6ZneDbM3MA3GnXijVxywq2xyZU2nAuipTpQ=w720-h310")
+        self.assertEqual(result['screenShotUrls'][22], "https://lh3.googleusercontent.com/VelJwUcL9YN0lR26bfxQtskhlKeJkwuJSMZu_h7Li6-uhrldGdronFIar37-6jQKOCA=w720-h310")
+        self.assertEqual(result['screenShotUrls'][23], "https://lh3.googleusercontent.com/L3u28JRmjp2i0uoZL6wXoaw-7ds9KIcM_GRC5lbJZvZh3xjOog4weZk1qJQSuyBNxjA=w720-h310")
+
     def test_parse_app_item_with_paid_app_success_response(self):
         response = fake_response('./data/paid_app_data.html', 'https://play.google.com/store/apps/details?id=com'
                                                               '.lunatouch.eyefilter.pro')
@@ -65,6 +91,15 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com"
                                             "/uTXhW9YVTDdkJg5JaSDyjnjg0UFRolcuor9uq4fhYBbNgzyT3I8ZFQG2HwODAMlZUPo"
                                             "=s180")
+        self.assertEqual(len(result['screenShotUrls']), 8);
+        self.assertEqual(result['screenShotUrls'][0], "https://lh3.googleusercontent.com/2SQ_WYgDzeY17Q8JqXT5XHBAYAdxxe-1hcY2EDO79R07R-OylMV58THw1nOwFhDomFY=w720-h310")
+        self.assertEqual(result['screenShotUrls'][1], "https://lh3.googleusercontent.com/aiiR0QMf-3-07wMIa0e3MaCg-AKB2eFJ84FJGklMqkGVfp5222tQnMY-MgJxRX9wbA=w720-h310")
+        self.assertEqual(result['screenShotUrls'][2], "https://lh3.googleusercontent.com/0b5okCg8BxzJ2ApWF3hFD29QOmscZocMU1pFypDVsRTEuTRq-at4_Ty9Ja8ol4ooqQru=w720-h310")
+        self.assertEqual(result['screenShotUrls'][3], "https://lh3.googleusercontent.com/3bCclcU-4koSyS6idZCJ0ZO-sKRhBZXVHM1K5eQphtBUbYPlqOnAchFPZlfVnpk-o-8=w720-h310")
+        self.assertEqual(result['screenShotUrls'][4], "https://lh3.googleusercontent.com/zi-7L0HdYTR6mUV__0MYD6cevggaCvZ0keAfOGGAAuw7IidQP3ZpOzCPlkZ96mR0Xw=w720-h310")
+        self.assertEqual(result['screenShotUrls'][5], "https://lh3.googleusercontent.com/2N_YKAKH0jNUI7xDPaB-pWWfl8_h5mwH5gELkeSjTRhdC5DE5WAxCH8PbFziVOGS3CYq=w720-h310")
+        self.assertEqual(result['screenShotUrls'][6], "https://lh3.googleusercontent.com/MwFL33dFkt8G01xnjgVw7bFWcBTE8nQLifb3zBMkC2ofzD46mqWgvo4xN_pEfIgQt0U=w720-h310")
+        self.assertEqual(result['screenShotUrls'][7], "https://lh3.googleusercontent.com/3UU5m0P-JX7hSK0uYfEDMAKLQvUHOKCRfNZHeGCcge7jpUxWH8kd7jX8miTZSlWymW4=w720-h310")
 
     def test_parse_app_item_with_no_score_and_no_similar_app_success_response(self):
         response = fake_response('./data/no_score_no_similar_app_data.html', 'https://play.google.com/store/apps'
@@ -89,6 +124,10 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(len(result['similarApps']), 0) # 유사앱
         self.assertEqual(result['iconUrl'], "https://lh3.googleusercontent.com/3qKoMefvL"
                                             "-4CUh9C0aLAnyNHbdOFKyGiegSP0BpxdKp6MZ2Qa_PnDttd2xr0fDurX-Q=s180")
+
+        self.assertEqual(len(result['screenShotUrls']), 2);
+        self.assertEqual(result['screenShotUrls'][0], "https://lh3.googleusercontent.com/Wqwz4FIQPLI1a9oYoCO1wHo6HYt5uLPPWn_ud4N6UxJSyWmtDZCHPe536k7D6Ebv2oE=w720-h310")
+        self.assertEqual(result['screenShotUrls'][1], "https://lh3.googleusercontent.com/wVf3rydJoywVk1ZKEgc0oX0qiwu8idaAeMEMn5ff7eydZECT909ZVHtgejUCINC0dG0=w720-h310")
 
     def test_parse_app_item_with_paid_app_failure_response(self):
         response = fake_response('./data/empty_data.html')
