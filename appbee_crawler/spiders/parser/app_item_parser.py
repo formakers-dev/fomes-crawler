@@ -75,10 +75,15 @@ class AppItemParser(object):
                                       "'https://play.google.com/store/apps/dev')]/text()").extract_first()
         item['description'] = ''.join(hxs.xpath("//meta[@itemprop='description']/@content").extract())
 
-        app_price = hxs.xpath("//meta[@itemprop='price']/@content").extract_first().split('₩')
+        app_price = hxs.xpath("//meta[@itemprop='price']/@content").extract_first()
 
-        if len(app_price) == 2:
-            item['appPrice'] = StringUtil.parseNumber(app_price[1])
+        if app_price is not None:
+            app_price = app_price.split('₩')
+
+            if len(app_price) == 2:
+                item['appPrice'] = StringUtil.parseNumber(app_price[1])
+            else:
+                item['appPrice'] = 0
         else:
             item['appPrice'] = 0
 

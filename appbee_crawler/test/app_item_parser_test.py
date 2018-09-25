@@ -147,6 +147,14 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['inappPriceMin'], 4500)
         self.assertEqual(result['inappPriceMax'], 4500)
 
+    def test_parse_app_item_without_app_price(self):
+        response = fake_response('./data/without_app_price_data.html', 'https://play.google.com/store/apps/details?id'
+                                                                       '=com.yahoo.mobile.client.android.flickr')
+        result = AppItemParser.parse(response)
+        self.assertEqual(result['appName'], 'Flickr')
+        self.assertEqual(result['packageName'], 'com.yahoo.mobile.client.android.flickr')
+        self.assertEqual(result['appPrice'], 0) # 가격
+
 
 if __name__ == '__main__':
     unittest.main()
