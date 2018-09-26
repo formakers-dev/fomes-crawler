@@ -8,14 +8,18 @@ from appbee_crawler.spiders.parser.app_item_parser import AppItemParser
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
-    start_urls = ["https://play.google.com/store/apps/collection/topselling_free?authuser=0",
-                  "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
-                  "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
-                  "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"]
+    start_urls = [
+        "https://play.google.com/store/apps/collection/topselling_free?authuser=0",
+        "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
+        "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
+        "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
+        "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
+        "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0",
+        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
+        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"
+    ]
+
+    app_counter = 0
 
     @staticmethod
     def get_form_data(page_number):
@@ -39,8 +43,11 @@ class AppSpider(scrapy.Spider):
     def after_app_list_parsing(self, response):
         hxs = Selector(response)
         selects = hxs.xpath("//div[@class='details']/a[@class='card-click-target']")
+
         for sel in selects:
             package_name = sel.xpath("@href").extract()[0].split('=')[1]
+            self.app_counter += 1
+            print('### [%5d] %s' % (self.app_counter, package_name))
             request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name,
                                      callback=self.after_parsing, meta={'packageName': package_name})
             yield request
