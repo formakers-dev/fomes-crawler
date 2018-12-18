@@ -4,6 +4,8 @@ from appbee_crawler.manager.db_manager import DBManager
 from appbee_crawler.spiders.category_spider import CategoryItem
 import re
 
+from appbee_crawler.util.string_util import StringUtil
+
 
 class AppBeeCrawlerPipeline(object):
     game_category_id_pattern = re.compile("^GAME")
@@ -17,6 +19,8 @@ class AppBeeCrawlerPipeline(object):
 
     def process_item(self, item, spider):
         print('### Process Item ###')
+
+        StringUtil.trim(item)
 
         if type(item) is CategoryItem:
             DBManager.upsert_categories(item)
