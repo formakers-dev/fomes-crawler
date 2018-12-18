@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+
 from pymongo import MongoClient
 
 
@@ -50,6 +51,12 @@ class DBManager(object):
         print('### Upsert Categories ### ' + str(item['id']))
         db = cls.get_db()
         db['categories'].update({'id': item['id']}, dict(item), upsert=True)
+
+    @classmethod
+    def upsert_non_game_apps(cls, item):
+        print('### Upsert Non Game App ### ' + str(item['packageName']))
+        db = cls.get_db()
+        db['non-game-apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
 
     @classmethod
     def select_apps(cls, package_name):
