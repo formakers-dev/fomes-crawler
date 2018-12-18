@@ -9,11 +9,20 @@ class DBManager(object):
     connection = None
 
     @classmethod
-    def get_db(cls, new=False):
-        if new or not cls.connection:
-            cls.connection = MongoClient(os.environ['RELEASE_MONGO_URL'])
-        if new or not cls.db:
-            cls.db = cls.connection.appbee
+    def get_db(cls):
+        if not cls.db:
+            if not cls.connection:
+                cls.connection = MongoClient(os.environ['RELEASE_MONGO_URL'])
+
+            if os.environ['PYTHON_ENV'] in ['development', 'staging', 'production']:
+                cls.db = cls.connection.appbee
+                print('Use appbee db for', os.environ['PYTHON_ENV'], 'environment')
+            elif os.environ['PYTHON_ENV'] in ['test']:
+                cls.db = cls.connection.test
+                print('Use test db for', os.environ['PYTHON_ENV'], 'environment')
+            else:
+                print('Wrong environment:', os.environ['PYTHON_ENV'])
+
         return cls.db
 
     @classmethod
