@@ -18,6 +18,7 @@ class AppSpider(scrapy.Spider):
         "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
         "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"
     ]
+    app_info_request_url = 'https://play.google.com/store/apps/details?id='
 
     app_counter = 0
 
@@ -48,7 +49,7 @@ class AppSpider(scrapy.Spider):
             package_name = sel.xpath("@href").extract()[0].split('=')[1]
             self.app_counter += 1
             print('### [%5d] %s' % (self.app_counter, package_name))
-            request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name,
+            request = scrapy.Request(self.app_info_request_url + package_name,
                                      callback=self.after_parsing, meta={'packageName': package_name})
             yield request
 
@@ -62,13 +63,16 @@ class AppSpider(scrapy.Spider):
     def request_similar_apps(self, response):
         hxs = Selector(response)
 
+        if 'depth' in response.meta:
+            print('Referer=', response.request.headers.get('Referer'), ' depth=', response.meta['depth'])
+
         # 유사한 앱 목록
         selects = hxs.xpath("//div[@class='WHE7ib mpg5gc']//div[@class='b8cIId ReQCgd Q9MA7b']/a")
 
-        # TODO: 유사앱의 packageName을 저장하는 수는 상관없으나, 크롤링하는 수는 제한해야할 것으로 보임.
         for sel in selects:
             similar_package_name = sel.xpath("@href").extract()[0].split('=')[1]
-            request = scrapy.Request('https://play.google.com/store/apps/details?id=' + similar_package_name,
+            request = scrapy.Request(self.app_info_request_url + similar_package_name,
                                      callback=self.after_parsing, meta={'packageName': similar_package_name,
                                                                         'priority': -1})
+
             yield request
