@@ -23,7 +23,7 @@ class AppSpider(scrapy.Spider):
     app_counter = 0
 
     @staticmethod
-    def get_form_data(page_number):
+    def generate_form_data(page_number):
         return {
             'start': str(page_number * 60),
             'num': '60',
@@ -37,7 +37,7 @@ class AppSpider(scrapy.Spider):
 
         for url in self.start_urls:
             for page_number in range(0, 9):
-                return_list.append(scrapy.FormRequest(url=url, formdata=self.get_form_data(page_number),
+                return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
                                                       callback=self.after_app_list_parsing))
         return return_list
 
