@@ -50,31 +50,32 @@ class DBManager(object):
         db['uncrawled-apps'].delete_one({'packageName': package_name})
 
     @classmethod
+    def update_app_usages(cls, item):
+        app_info = {
+            'appName': item['appName'],
+            'categoryId': item['categoryId1'],
+            'categoryName': item['categoryName1'],
+            'developer': item['developer'],
+            'iconUrl': item['iconUrl'],
+        }
+
+        DBManager.get_db()['app-usages'].update_many({'packageName': item['packageName']}, {'$set': app_info})
+
+    @classmethod
     def upsert_apps(cls, item):
         print('### Upsert Apps ### ' + str(item['packageName']))
         db = cls.get_db()
-        db['apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
+        db['apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
+        cls.update_app_usages(item)
 
     @classmethod
     def upsert_categories(cls, item):
         print('### Upsert Categories ### ' + str(item['id']))
         db = cls.get_db()
-        db['categories'].update({'id': item['id']}, dict(item), upsert=True)
+        db['categories'].update_one({'id': item['id']}, dict(item), upsert=True)
 
     @classmethod
     def upsert_other_apps(cls, item):
         print('### Upsert Other App ### ' + str(item['packageName']))
         db = cls.get_db()
-        db['other-apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
-
-    @classmethod
-    def select_apps(cls, package_name):
-        db = cls.get_db()
-        docs = db['apps'].find({'packageName': package_name})
-        return docs
-
-    @classmethod
-    def select_user_apps(cls):
-        db = cls.get_db()
-        docs = db['user-apps'].find()
-        return docs
+        db['other-apps'].update_one({'packageName': item['packageName']}, dict(item), upsert=True)
