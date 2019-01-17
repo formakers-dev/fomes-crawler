@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import re
 
 import scrapy
@@ -10,20 +11,16 @@ from appbee_crawler.spiders.parser.app_item_parser import AppItemParser
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
-    start_urls = [
-        "https://play.google.com/store/apps/collection/topselling_free?authuser=0",
-        "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
-        "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"
-    ]
     app_info_request_url = 'https://play.google.com/store/apps/details?id='
 
     app_counter = 0
     game_category_id_pattern = re.compile("^GAME")
+
+    def __init__(self, urls=None, *args, **kwargs):
+        super(AppSpider, self).__init__(*args, **kwargs)
+
+        if os.environ['PYTHON_ENV'] not in ['test']:
+            self.start_urls = urls.split(';')
 
     @staticmethod
     def generate_form_data(page_number):
