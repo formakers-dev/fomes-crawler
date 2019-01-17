@@ -48,27 +48,30 @@ class AfterParsingTestCase(unittest.TestCase):
         mock_parse.assert_called_with("test response")
 
     @patch.object(AppItemParser, 'parse')
-    def test_after_parsing_호출시__파싱한_앱정보_중_게임만_반환한다(self, mock_parse):
-        mock_parse.side_effect = [
-            self.other_app_item,
-            self.game_app_item
-        ]
+    def test_after_parsing_호출시__파싱한_앱정보를_반환한다(self, mock_parse):
+        mock_parse.return_value = self.game_app_item
 
         mock_request_similar_apps = Mock()
-        mock_request_similar_apps.side_effect = [
-            iter(["similar_app_request"]),
-            iter(["similar_app_request"])
-        ]
+        mock_request_similar_apps.return_value = iter(["similar_app_request"])
 
         self.spider.request_similar_apps = mock_request_similar_apps
 
         generator = self.spider.after_parsing(response="test_response")
 
+        self.assertEqual("GAME_PUZZLE", next(generator)['categoryId1'])
         self.assertEqual("similar_app_request", next(generator))
+
+    @patch.object(AppItemParser, 'parse')
+    def test_after_parsing_호출시__파싱한_앱정보_중_일반앱정보는_반환하지않는다(self, mock_parse):
+        mock_parse.return_value = self.other_app_item
+
+        mock_request_similar_apps = Mock()
+        mock_request_similar_apps.return_value = iter(["similar_app_request"])
+
+        self.spider.request_similar_apps = mock_request_similar_apps
 
         generator = self.spider.after_parsing(response="test_response")
 
-        self.assertEqual("GAME_PUZZLE", next(generator)['categoryId1'])
         self.assertEqual("similar_app_request", next(generator))
 
 
