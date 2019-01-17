@@ -23,13 +23,13 @@ class AppBeeCrawlerPipeline(object):
         StringUtil.trim(item)
 
         if type(item) is CategoryItem:
-            DBManager.upsert_categories(item)
+            DBManager.upsert_category(item)
         elif type(item) is AppItem:
 
             if self.game_category_id_pattern.match(item['categoryId1']):
-                DBManager.upsert_apps(item)
+                DBManager.upsert_app(item)
             else:
-                DBManager.upsert_other_apps(item)
+                DBManager.upsert_other_app(item)
 
             DBManager.delete_uncrawled_app(item['packageName'])
 

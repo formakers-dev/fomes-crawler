@@ -101,7 +101,7 @@ class UpsertAppsTestCase(unittest.TestCase):
         ]
 
         for app in apps:
-            DBManager.upsert_apps(app)
+            DBManager.upsert_app(app)
 
         upserted_apps = DBManager.get_db()['apps'].find({'packageName': 'com.test.1'})
 
@@ -127,7 +127,7 @@ class UpsertAppsTestCase(unittest.TestCase):
         ]
 
         for app in apps:
-            DBManager.upsert_apps(app)
+            DBManager.upsert_app(app)
 
         upserted_apps = DBManager.get_db()['apps'].find({'packageName': 'com.test.3'})
 
@@ -154,7 +154,7 @@ class UpsertAppsTestCase(unittest.TestCase):
         ]
         
         for app in apps:
-            DBManager.upsert_apps(app)
+            DBManager.upsert_app(app)
 
         upserted_app_usages = DBManager.get_db()['app-usages'].find({})
 
