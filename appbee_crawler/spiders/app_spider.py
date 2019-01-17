@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+
 import scrapy
 from scrapy.selector import Selector
 
@@ -21,6 +23,7 @@ class AppSpider(scrapy.Spider):
     app_info_request_url = 'https://play.google.com/store/apps/details?id='
 
     app_counter = 0
+    game_category_id_pattern = re.compile("^GAME")
 
     @staticmethod
     def generate_form_data(page_number):
@@ -54,7 +57,10 @@ class AppSpider(scrapy.Spider):
             yield request
 
     def after_parsing(self, response):
-        yield AppItemParser.parse(response)
+        parsed_app_item = AppItemParser.parse(response)
+
+        if self.game_category_id_pattern.match(parsed_app_item['categoryId1']):
+            yield parsed_app_item
 
         generator = self.request_similar_apps(response)
         for request in generator:
