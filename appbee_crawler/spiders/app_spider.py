@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import re
+
 import scrapy
 from scrapy.selector import Selector
 
@@ -8,22 +11,19 @@ from appbee_crawler.spiders.parser.app_item_parser import AppItemParser
 class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
-    start_urls = [
-        "https://play.google.com/store/apps/collection/topselling_free?authuser=0",
-        "https://play.google.com/store/apps/collection/topselling_paid?authuser=0",
-        "https://play.google.com/store/apps/collection/topgrossing?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_free?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_paid?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topgrossing?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_free?authuser=0",
-        "https://play.google.com/store/apps/category/GAME/collection/topselling_new_paid?authuser=0"
-    ]
     app_info_request_url = 'https://play.google.com/store/apps/details?id='
 
     app_counter = 0
+    game_category_id_pattern = re.compile("^GAME")
+
+    def __init__(self, urls=None, *args, **kwargs):
+        super(AppSpider, self).__init__(*args, **kwargs)
+
+        if os.environ['PYTHON_ENV'] not in ['test']:
+            self.start_urls = urls.split(';')
 
     @staticmethod
-    def get_form_data(page_number):
+    def generate_form_data(page_number):
         return {
             'start': str(page_number * 60),
             'num': '60',
@@ -37,7 +37,7 @@ class AppSpider(scrapy.Spider):
 
         for url in self.start_urls:
             for page_number in range(0, 9):
-                return_list.append(scrapy.FormRequest(url=url, formdata=self.get_form_data(page_number),
+                return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
                                                       callback=self.after_app_list_parsing))
         return return_list
 
@@ -54,7 +54,10 @@ class AppSpider(scrapy.Spider):
             yield request
 
     def after_parsing(self, response):
-        yield AppItemParser.parse(response)
+        parsed_app_item = AppItemParser.parse(response)
+
+        if self.game_category_id_pattern.match(parsed_app_item['categoryId1']):
+            yield parsed_app_item
 
         generator = self.request_similar_apps(response)
         for request in generator:

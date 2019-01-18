@@ -30,51 +30,51 @@ class DBManager(object):
         cls.connection.close()
 
     @classmethod
-    def select_uncrawled_apps(cls):
+    def get_uncrawled_apps_without_error_code(cls):
         db = cls.get_db()
         docs = db['uncrawled-apps'].find({'errCode': {'$exists': False}})
-        # docs = db['uncrawled-apps'].find()
         return docs
 
     @classmethod
-    def update_uncrawled_apps(cls, package_name, error_code):
-        print('### Update Uncrawled App ### ' + str(package_name) + ' ' + str(error_code))
+    def update_error_code_of_uncrawled_app(cls, package_name, error_code):
+        print('### Update errCode:' + str(error_code) + ' of ' + str(package_name) + 'in Uncrawled Apps ###')
         db = cls.get_db()
 
         db['uncrawled-apps'].update_one({'packageName': package_name}, {"$set": {'errCode': error_code}}, upsert=False)
 
     @classmethod
     def delete_uncrawled_app(cls, package_name):
-        print('### Delete Uncrawled App ### ' + str(package_name))
+        print('### Delete ' + str(package_name) + ' from Uncrawled Apps ###')
         db = cls.get_db()
         db['uncrawled-apps'].delete_one({'packageName': package_name})
 
     @classmethod
-    def upsert_apps(cls, item):
-        print('### Upsert Apps ### ' + str(item['packageName']))
-        db = cls.get_db()
-        db['apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
+    def update_app_usages(cls, item):
+        app_info = {
+            'appName': item['appName'],
+            'categoryId': item['categoryId1'],
+            'categoryName': item['categoryName1'],
+            'developer': item['developer'],
+            'iconUrl': item['iconUrl'],
+        }
+
+        DBManager.get_db()['app-usages'].update_many({'packageName': item['packageName']}, {'$set': app_info})
 
     @classmethod
-    def upsert_categories(cls, item):
-        print('### Upsert Categories ### ' + str(item['id']))
+    def upsert_app(cls, item):
+        print('### Upsert ' + str(item['packageName']) + 'to Apps ###')
         db = cls.get_db()
-        db['categories'].update({'id': item['id']}, dict(item), upsert=True)
+        db['apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
+        cls.update_app_usages(item)
 
     @classmethod
-    def upsert_non_game_apps(cls, item):
-        print('### Upsert Non Game App ### ' + str(item['packageName']))
+    def upsert_category(cls, item):
+        print('### Upsert ' + str(item['id']) + 'to Categories ###')
         db = cls.get_db()
-        db['non-game-apps'].update({'packageName': item['packageName']}, dict(item), upsert=True)
+        db['categories'].update_one({'id': item['id']}, dict(item), upsert=True)
 
     @classmethod
-    def select_apps(cls, package_name):
+    def upsert_other_app(cls, item):
+        print('### Upsert ' + str(item['packageName']) + 'to Other App ###')
         db = cls.get_db()
-        docs = db['apps'].find({'packageName': package_name})
-        return docs
-
-    @classmethod
-    def select_user_apps(cls):
-        db = cls.get_db()
-        docs = db['user-apps'].find()
-        return docs
+        db['other-apps'].update_one({'packageName': item['packageName']}, dict(item), upsert=True)

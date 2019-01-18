@@ -11,7 +11,7 @@ class UncrawledAppSpider(scrapy.Spider):
     allowed_domains = ["play.google.com"]
 
     def start_requests(self):
-        uncrawled_apps_list = DBManager.select_uncrawled_apps()
+        uncrawled_apps_list = DBManager.get_uncrawled_apps_without_error_code()
         for app in uncrawled_apps_list:
             package_name = app['packageName']
             request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name,
@@ -28,4 +28,4 @@ class UncrawledAppSpider(scrapy.Spider):
         if failure.check(HttpError):
             response = failure.value.response
             print(response.meta.get('packageName'), "/", response.status)
-            DBManager.update_uncrawled_apps(response.meta.get('packageName'), response.status)
+            DBManager.update_error_code_of_uncrawled_app(response.meta.get('packageName'), response.status)
