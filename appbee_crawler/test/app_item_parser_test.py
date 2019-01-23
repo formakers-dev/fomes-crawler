@@ -1,10 +1,12 @@
 import unittest
 
+from scrapy import Selector
+
 from appbee_crawler.spiders.parser.app_item_parser import AppItemParser
 from appbee_crawler.test.fake_response import fake_response
 
 
-class TestAppItemParser(unittest.TestCase):
+class ParseTestCase(unittest.TestCase):
 
     # data/category_data.html : Google Play Apps(https://play.google.com/store/apps) 의 카테고리 리스트
     # data/free_app_data.html : 무료앱 Detail 페이지
@@ -154,6 +156,56 @@ class TestAppItemParser(unittest.TestCase):
         self.assertEqual(result['appName'], 'Flickr')
         self.assertEqual(result['packageName'], 'com.yahoo.mobile.client.android.flickr')
         self.assertEqual(result['appPrice'], 0) # 가격
+
+
+class ParseImageUrlsTestCase(unittest.TestCase):
+    def test_parse_image_urls_호출시__data_src_속성이_있는_경우__해당_속성의_값을_반환한다(self):
+        body = '<button><img data-src="https://lh3.googleusercontent.com/tqntm-XxlO7iZIOHJmrk3l4Go7kHK7LtaXp8F' \
+               '-YLZsgchdk3xm1Y5Q5vo2UhxkcnfLU=w720-h310" data-ils="3" ' \
+               'data-srcset="https://lh3.googletent.com/tqntm-XxlO7iZIOHJmrk3l4Go7kHK7LtaXp8F' \
+               '-YLZsgchdk3xm1Y5Q5vo2UhxkcnfLU=w1440-h620 2x" src="data:image/gif;base64,' \
+               'R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="T75of lxGQyd" aria-hidden="true" ' \
+               'width="174" height="310" alt="스크린샷 이미지" itemprop="image"></button>' \
+               '' \
+               '<button><img data-src="https://lh3.googleusercontent.com' \
+               '/7Orq2GIO5BJ54buOH8UX_8DlSQxLKDXz78Fe7sGxb5OsRC9eaGtXQUpJSbFsceYlCeY=w720-h310" data-ils="3" ' \
+               'data-srcset="https://lh3.googleusercontent.com' \
+               '/7Orq2GIO5BJ54b8UX_8DlSQxLKDXz78Fe7sGxb5OsRC9eaGtXQUpJSbFsceYlCeY=w1440-h620 2x" ' \
+               'src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="T75of ' \
+               'lxGQyd" aria-hidden="true" width="174" height="310" alt="스크린샷 이미지" itemprop="image"></button>'
+
+        html_xpath_selector = Selector(text=body)
+
+        image_urls = AppItemParser.parse_image_urls(html_xpath_selector)
+
+        self.assertEqual(2, len(image_urls))
+        self.assertEqual('https://lh3.googleusercontent.com/tqntm-XxlO7iZIOHJmrk3l4Go7kHK7LtaXp8F'
+                         '-YLZsgchdk3xm1Y5Q5vo2UhxkcnfLU=w720-h310', image_urls[0])
+        self.assertEqual('https://lh3.googleusercontent.com/7Orq2GIO5BJ54buOH8UX_8DlSQxLKDXz78Fe7s'
+                         'Gxb5OsRC9eaGtXQUpJSbFsceYlCeY=w720-h310', image_urls[1])
+
+    def test_parse_image_urls_호출시__data_src_속성이_없는_경우__src_속성의_값을_반환한다(self):
+        body = '<html><body><button><img src="https://lh3.googleusercontent.com' \
+               '/UO6TNZFTmlErswBxnrkhcs0BREVcl9mQrHlxzRb45lMEWQMIpuZBKc-Bf3QNWcyPB9U=w720-h310" ' \
+               'srcset="https://lh3.googleusercontent.com/UO6TNZFTmlErswBxnrkhcs0BREVcl9mQrHlxzRb45lMEWQMIpuZBKc' \
+               '-Bf3QNWcyPB9U=w1440-h620 2x" class="T75of lxGQyd" aria-hidden="true" width="174" height="310" ' \
+               'alt="스크린샷 이미지" itemprop="image"></button>' \
+               '' \
+               '<button><img src="https://lh3.googleusercontent.com/Rs9AuPcs6prp0do-nxOglbn6ddqbS9BjOtb55qx' \
+               '-18b8QwGqb9mBuSByeiF9qellRj0=w720-h310" ' \
+               'srcset="https://lh3.googleusercontent.com/Rs9AuPcs6prp0lbn6ddqbS9BjOtb55qx' \
+               '-18b8QwGqb9mBuSByeiF9qellRj0=w1440-h620 2x" class="T75of lxGQyd" aria-hidden="true" width="174" ' \
+               'height="310" alt="스크린샷 이미지" itemprop="image"></button>'
+
+        html_xpath_selector = Selector(text=body)
+
+        image_urls = AppItemParser.parse_image_urls(html_xpath_selector)
+
+        self.assertEqual(2, len(image_urls))
+        self.assertEqual('https://lh3.googleusercontent.com/UO6TNZFTmlErswBxnrkhcs0BREVcl9mQrHlxzRb45lMEWQMIpuZBKc'
+                         '-Bf3QNWcyPB9U=w720-h310', image_urls[0])
+        self.assertEqual('https://lh3.googleusercontent.com/Rs9AuPcs6prp0do-nxOglbn6ddqbS9BjOtb55qx'
+                         '-18b8QwGqb9mBuSByeiF9qellRj0=w720-h310', image_urls[1])
 
 
 if __name__ == '__main__':

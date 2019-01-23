@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+
 from scrapy.selector import Selector
+
 from appbee_crawler.app_items import AppItem
 from appbee_crawler.util.date_util import DateUtil
 from appbee_crawler.util.string_util import StringUtil
@@ -117,7 +119,23 @@ class AppItemParser(object):
         else:
             item['iconUrl'] = ''
 
-        image_urls = hxs.xpath("//button/img[@itemprop='image']/@src").extract()
-        item['imageUrls'] = image_urls
+        item['imageUrls'] = cls.parse_image_urls(hxs)
 
         return item
+
+    @classmethod
+    def parse_image_urls(cls, html_xpath_selector):
+        img_tag_selectors = html_xpath_selector.xpath("//button/img[@itemprop='image']")
+        image_urls = []
+
+        for img_tag_selector in img_tag_selectors:
+            data_src = img_tag_selector.re(r'\sdata-src="(\S+)"')
+
+            if len(data_src) > 0:
+                image_urls.append(data_src[0])
+            else:
+                src = img_tag_selector.re(r'\ssrc="(\S+)"')
+                if len(src) > 0:
+                    image_urls.append(src[0])
+
+        return image_urls
