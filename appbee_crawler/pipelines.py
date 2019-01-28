@@ -2,14 +2,11 @@
 from appbee_crawler.app_items import AppItem
 from appbee_crawler.manager.db_manager import DBManager
 from appbee_crawler.spiders.category_spider import CategoryItem
-import re
 
 from appbee_crawler.util.string_util import StringUtil
 
 
 class AppBeeCrawlerPipeline(object):
-    game_category_id_pattern = re.compile("^GAME")
-
     def __init__(self):
         print('### init Pipeline ###')
 
@@ -26,7 +23,7 @@ class AppBeeCrawlerPipeline(object):
             DBManager.upsert_category(item)
         elif type(item) is AppItem:
 
-            if self.game_category_id_pattern.match(item['categoryId1']):
+            if item.is_game():
                 DBManager.upsert_app(item)
             else:
                 DBManager.upsert_other_app(item)

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 
 import scrapy
 from scrapy.selector import Selector
@@ -12,9 +11,7 @@ class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
     app_info_request_url = 'https://play.google.com/store/apps/details?id='
-
     app_counter = 0
-    game_category_id_pattern = re.compile("^GAME")
 
     def __init__(self, urls=None, *args, **kwargs):
         super(AppSpider, self).__init__(*args, **kwargs)
@@ -60,7 +57,7 @@ class AppSpider(scrapy.Spider):
     def after_parsing(self, response):
         parsed_app_item = AppItemParser.parse(response)
 
-        if self.game_category_id_pattern.match(parsed_app_item['categoryId1']):
+        if parsed_app_item.is_game():
             yield parsed_app_item
 
         generator = self.request_similar_apps(response)
