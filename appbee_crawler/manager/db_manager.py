@@ -71,10 +71,10 @@ class DBManager(object):
     def upsert_category(cls, item):
         print('### Upsert ' + str(item['id']) + 'to Categories ###')
         db = cls.get_db()
-        db['categories'].update_one({'id': item['id']}, dict(item), upsert=True)
+        db['categories'].update_one({'id': item['id']}, {'$set': dict(item)}, upsert=True)
 
     @classmethod
     def upsert_other_app(cls, item):
         print('### Upsert ' + str(item['packageName']) + 'to Other App ###')
         db = cls.get_db()
-        db['other-apps'].update_one({'packageName': item['packageName']}, dict(item), upsert=True)
+        db['other-apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
