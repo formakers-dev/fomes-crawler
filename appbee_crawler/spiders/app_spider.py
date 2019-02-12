@@ -47,6 +47,10 @@ class AppSpider(scrapy.Spider):
 
         for sel in selects:
             package_name = sel.xpath("@href").extract()[0].split('=')[1]
+
+            if package_name == 'com.formakers.fomes':
+                continue
+
             self.app_counter += 1
             print('### [%5d] %s' % (self.app_counter, package_name))
             request = scrapy.Request(self.app_info_request_url + package_name,
