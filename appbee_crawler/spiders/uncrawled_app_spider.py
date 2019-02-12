@@ -14,6 +14,10 @@ class UncrawledAppSpider(scrapy.Spider):
         uncrawled_apps_list = DBManager.get_uncrawled_apps_without_error_code()
         for app in uncrawled_apps_list:
             package_name = app['packageName']
+
+            if package_name == 'com.formakers.fomes':
+                continue
+
             request = scrapy.Request('https://play.google.com/store/apps/details?id=' + package_name,
                                      callback=self.after_parsing, meta={'packageName': package_name},
                                      dont_filter=True, errback=self.error_handler)
