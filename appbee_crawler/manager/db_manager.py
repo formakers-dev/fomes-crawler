@@ -62,19 +62,19 @@ class DBManager(object):
 
     @classmethod
     def upsert_app(cls, item):
-        print('### Upsert ' + str(item['packageName']) + 'to Apps ###')
+        print('### Upsert ' + str(item['packageName']) + ' to Apps ###')
         db = cls.get_db()
         db['apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
         cls.update_app_usages(item)
 
     @classmethod
     def upsert_category(cls, item):
-        print('### Upsert ' + str(item['id']) + 'to Categories ###')
+        print('### Upsert ' + str(item['id']) + ' to Categories ###')
         db = cls.get_db()
         db['categories'].update_one({'id': item['id']}, {'$set': dict(item)}, upsert=True)
 
     @classmethod
     def upsert_other_app(cls, item):
-        print('### Upsert ' + str(item['packageName']) + 'to Other App ###')
+        print('### Upsert ' + str(item['packageName']) + ' to Other App ###')
         db = cls.get_db()
         db['other-apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
