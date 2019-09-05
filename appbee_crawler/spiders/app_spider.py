@@ -16,8 +16,9 @@ class AppSpider(scrapy.Spider):
     def __init__(self, urls=None, *args, **kwargs):
         super(AppSpider, self).__init__(*args, **kwargs)
 
-        if os.environ['PYTHON_ENV'] not in ['test']:
-            self.start_urls = urls.split(';')
+        if urls is not None:
+            if os.environ['PYTHON_ENV'] not in ['test']:
+               self.start_urls = urls.split(';')
 
     @staticmethod
     def generate_form_data(page_number):
@@ -32,9 +33,13 @@ class AppSpider(scrapy.Spider):
     def start_requests(self):
         return_list = []
 
-        for url in self.start_urls:
-            for page_number in range(0, 9):
-                return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
+        if self.packageName is not None:
+            return_list.append(scrapy.FormRequest(url=self.app_info_request_url + self.packageName,
+                               callback=self.after_parsing, meta={'packageName': self.packageName}))
+        else:
+            for url in self.start_urls:
+                for page_number in range(0, 9):
+                    return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
                                                       callback=self.after_app_list_parsing))
         return return_list
 
