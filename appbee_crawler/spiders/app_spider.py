@@ -17,8 +17,8 @@ class AppSpider(scrapy.Spider):
         super(AppSpider, self).__init__(*args, **kwargs)
 
         if urls is not None:
-            if os.environ['PYTHON_ENV'] not in ['test']:
-               self.start_urls = urls.split(';')
+            if ';' in urls:
+                self.start_urls = urls.split(';')
 
     @staticmethod
     def generate_form_data(page_number):
