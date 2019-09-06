@@ -11,7 +11,7 @@ class CategorySpider(scrapy.Spider):
 
     def parse(self, response):
         hxs = Selector(response)
-        selects = hxs.xpath("//a[@class='child-submenu-link']")
+        selects = hxs.xpath("//a[@class='r2Osbf']")
         items = []
         for sel in selects:
             item = CategoryItem()
