@@ -27,7 +27,8 @@ class DBManager(object):
 
     @classmethod
     def close(cls):
-        cls.connection.close()
+        if cls.connection:
+            cls.connection.close()
 
     @classmethod
     def get_uncrawled_apps_without_error_code(cls):
