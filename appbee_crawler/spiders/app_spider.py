@@ -19,6 +19,8 @@ class AppSpider(scrapy.Spider):
         if urls is not None:
             if ';' in urls:
                 self.start_urls = urls.split(';')
+            else:
+                self.start_urls = [urls]
 
     @staticmethod
     def generate_form_data(page_number):
@@ -33,7 +35,7 @@ class AppSpider(scrapy.Spider):
     def start_requests(self):
         return_list = []
 
-        if self.packageName is not None:
+        if hasattr(self, 'packageName') and self.packageName is not None:
             return_list.append(scrapy.FormRequest(url=self.app_info_request_url + self.packageName,
                                callback=self.after_parsing, meta={'packageName': self.packageName}))
         else:
