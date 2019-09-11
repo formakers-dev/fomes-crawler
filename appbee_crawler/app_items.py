@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+
 import scrapy
 
 
@@ -28,3 +30,8 @@ class AppItem(scrapy.Item):
     inappPriceMin = scrapy.Field()      # 인앱결제 가격이 한 가지인 경우도 있음.
     inappPriceMax = scrapy.Field()
     similarApps = scrapy.Field()
+
+    game_category_id_pattern = re.compile("^GAME")
+
+    def is_game(self):
+        return True if self.game_category_id_pattern.match(self['categoryId1']) else False

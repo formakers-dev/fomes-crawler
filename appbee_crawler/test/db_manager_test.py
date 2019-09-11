@@ -152,7 +152,7 @@ class UpsertAppsTestCase(unittest.TestCase):
                 'iconUrl': 'icon.test.com/2222'
             }
         ]
-        
+
         for app in apps:
             DBManager.upsert_app(app)
 
@@ -195,3 +195,39 @@ class UpsertAppsTestCase(unittest.TestCase):
         self.assertEqual(upserted_app_usages[3]['categoryName'], '퍼즐')
         self.assertEqual(upserted_app_usages[3]['developer'], 'TEST DEV 2')
         self.assertEqual(upserted_app_usages[3]['iconUrl'], 'icon.test.com/2')
+
+
+class UncrawledAppTestCase(unittest.TestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        uncrawled_apps = [
+            {
+                'packageName': 'test.uncrawled.0',
+                'errCode': 404
+            },
+            {
+                'packageName': 'test.uncrawled.1',
+            }
+        ]
+
+        DBManager.get_db()['uncrawled-apps'].insert_many(uncrawled_apps)
+
+    def tearDown(self):
+        super().tearDown()
+
+        DBManager.get_db()['uncrawled-apps'].delete_many({})
+
+    def test_get_uncrawled_apps_without_error_code_호출시__에러코드가_없는_언크롤드앱정보를_모두_가져온다(self):
+        uncrawled_app_count = DBManager.get_db()['uncrawled-apps'].count_documents({'errCode': {'$exists': False}})
+        uncrawled_apps = DBManager.get_db()['uncrawled-apps'].find({'errCode': {'$exists': False}})
+
+        self.assertEqual(1, uncrawled_app_count)
+        self.assertEqual('test.uncrawled.1', uncrawled_apps[0]['packageName'])
+
+    def test_delete_uncrawled_app_호출시__입력한_packageName에_해당하는_언크롤드앱_정보를_삭제한다(self):
+        DBManager.delete_uncrawled_app('test.uncrawled.1')
+        uncrawled_app_count = DBManager.get_db()['uncrawled-apps'].count_documents({'errCode': {'$exists': False}})
+
+        self.assertEqual(0, uncrawled_app_count)

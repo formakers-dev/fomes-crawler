@@ -16,12 +16,12 @@ class RequestSimilarAppsTestCase(unittest.TestCase):
     def test_request_similar_apps(self):
         response = fake_response('./data/free_app_data.html')
         generator = self.spider.request_similar_apps(response)
-        self.assertEqual(next(generator)._get_url(),
-                         'https://play.google.com/store/apps/details?id=com.idleif.abyssrium')
-        self.assertEqual(next(generator)._get_url(),
-                         'https://play.google.com/store/apps/details?id=com.ThreeCatGames.ThisCell')
-        self.assertEqual(next(generator)._get_url(),
-                         'https://play.google.com/store/apps/details?id=com.crowdstar.covetHome')
+        self.assertEqual('https://play.google.com/store/apps/details?id=es.socialpoint.MonsterLegends', next(generator)._get_url())
+        self.assertEqual('https://play.google.com/store/apps/details?id=com.sega.sprint', next(generator)._get_url())
+        self.assertEqual('https://play.google.com/store/apps/details?id=com.mtvn.superbrawlapp', next(generator)._get_url())
+        next(generator)
+        next(generator)
+        next(generator)
         next(generator)
         next(generator)
         self.assertRaises(StopIteration, next, generator)

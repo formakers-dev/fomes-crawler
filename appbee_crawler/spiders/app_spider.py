@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 
 import scrapy
 from scrapy.selector import Selector
@@ -12,15 +11,16 @@ class AppSpider(scrapy.Spider):
     name = "AppSpider"
     allowed_domains = ["play.google.com"]
     app_info_request_url = 'https://play.google.com/store/apps/details?id='
-
     app_counter = 0
-    game_category_id_pattern = re.compile("^GAME")
 
     def __init__(self, urls=None, *args, **kwargs):
         super(AppSpider, self).__init__(*args, **kwargs)
 
-        if os.environ['PYTHON_ENV'] not in ['test']:
-            self.start_urls = urls.split(';')
+        if urls is not None:
+            if ';' in urls:
+                self.start_urls = urls.split(';')
+            else:
+                self.start_urls = [urls]
 
     @staticmethod
     def generate_form_data(page_number):
@@ -35,9 +35,13 @@ class AppSpider(scrapy.Spider):
     def start_requests(self):
         return_list = []
 
-        for url in self.start_urls:
-            for page_number in range(0, 9):
-                return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
+        if hasattr(self, 'packageName') and self.packageName is not None:
+            return_list.append(scrapy.FormRequest(url=self.app_info_request_url + self.packageName,
+                               callback=self.after_parsing, meta={'packageName': self.packageName}))
+        else:
+            for url in self.start_urls:
+                for page_number in range(0, 9):
+                    return_list.append(scrapy.FormRequest(url=url, formdata=self.generate_form_data(page_number),
                                                       callback=self.after_app_list_parsing))
         return return_list
 
@@ -60,7 +64,7 @@ class AppSpider(scrapy.Spider):
     def after_parsing(self, response):
         parsed_app_item = AppItemParser.parse(response)
 
-        if self.game_category_id_pattern.match(parsed_app_item['categoryId1']):
+        if parsed_app_item.is_game():
             yield parsed_app_item
 
         generator = self.request_similar_apps(response)

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from scrapy.selector import Selector
 
 from appbee_crawler.app_items import AppItem
@@ -26,12 +28,6 @@ class AppItemParser(object):
         if len(package_name) > 1:
             item['packageName'] = response.url.split('=')[1]
 
-        score_data = hxs.xpath("//meta[@itemprop='ratingValue']/@content").extract()
-        if len(score_data) > 0:
-            item['star'] = float(score_data[0])
-        else:
-            item['star'] = 0
-
         installs = hxs.xpath("//div[@class='hAyfc']/div[@class='BgcNfc' and text()='설치 수']/"
                              "../span[@class='htlgb']/div/span[@class='htlgb']/text()").extract()
         if len(installs) > 0:
@@ -47,12 +43,6 @@ class AppItemParser(object):
         else:
             item['installsMin'] = 0
             item['installsMax'] = 0
-
-        review_count = hxs.xpath("//meta[@itemprop='reviewCount']/@content").extract()
-        if len(review_count) > 0:
-            item['reviewCount'] = StringUtil.parseNumber(review_count[0])
-        else:
-            item['reviewCount'] = 0
 
         update_date = hxs.xpath("//div[@class='hAyfc']/div[@class='BgcNfc' and text()='업데이트 날짜']/ ../span["
                                 "@class='htlgb']/div/span[@class='htlgb']/text()").extract_first()
@@ -72,9 +62,10 @@ class AppItemParser(object):
             item['categoryId2'] = ''
             item['categoryName2'] = ''
 
-        item['contentsRating'] = hxs.xpath("//meta[@itemprop='contentRating']/@content").extract_first()
+        # item['contentsRating'] = hxs.xpath("//meta[@itemprop='contentRating']/@content").extract_first()
+        item['contentsRating'] = hxs.xpath("//div[@class='BgcNfc' and text()='콘텐츠 등급']/../span/div/span/div/text()").extract_first()
         item['developer'] = hxs.xpath("//a[@class='hrTbp R8zArc' and starts-with(@href, "
-                                      "'https://play.google.com/store/apps/dev')]/text()").extract_first()
+                                      "'/store/apps/dev')]/text()").extract_first()
         item['description'] = ''.join(hxs.xpath("//meta[@itemprop='description']/@content").extract())
 
         app_price = hxs.xpath("//meta[@itemprop='price']/@content").extract_first()
@@ -121,7 +112,20 @@ class AppItemParser(object):
 
         item['imageUrls'] = cls.parse_image_urls(hxs)
 
+        # JSON을 이용한 파트
+        app_info_json = json.loads(hxs.xpath("//script[@type='application/ld+json']//text()").extract_first())
+
+        if 'aggregateRating' in app_info_json:
+            aggregate_rating = app_info_json['aggregateRating']
+            item['star'] = float(aggregate_rating['ratingValue'])
+            item['reviewCount'] = StringUtil.parseNumber(aggregate_rating['ratingCount'])
+        else:
+            item['star'] = 0
+            item['reviewCount'] = 0
+
+
         return item
+
 
     @classmethod
     def parse_image_urls(cls, html_xpath_selector):
