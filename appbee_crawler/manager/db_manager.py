@@ -79,3 +79,9 @@ class DBManager(object):
         print('### Upsert ' + str(item['packageName']) + ' to Other App ###')
         db = cls.get_db()
         db['other-apps'].update_one({'packageName': item['packageName']}, {'$set': dict(item)}, upsert=True)
+
+    @classmethod
+    def get_package_names_to_update_info(cls):
+        db = cls.get_db()
+        package_names = db['app-usages'].distinct('packageName')
+        return package_names
