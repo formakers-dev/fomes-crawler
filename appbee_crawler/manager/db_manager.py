@@ -31,10 +31,18 @@ class DBManager(object):
             cls.connection.close()
 
     @classmethod
-    def get_uncrawled_apps_without_error_code(cls):
+    def get_uncrawled_package_names_without_error_code(cls):
         db = cls.get_db()
-        docs = db['uncrawled-apps'].find({'errCode': {'$exists': False}})
-        return docs
+        uncrawled_package_names = db['uncrawled-apps'].distinct('packageName', {'errCode': {'$exists': False}})
+        other_apps_package_names = db['other-apps'].distinct('packageName')
+
+        target_package_names = []
+
+        for package_name in uncrawled_package_names:
+            if package_name not in other_apps_package_names:
+                target_package_names.append(package_name)
+
+        return target_package_names
 
     @classmethod
     def update_error_code_of_uncrawled_app(cls, package_name, error_code):

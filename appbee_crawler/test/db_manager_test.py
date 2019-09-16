@@ -209,28 +209,41 @@ class UncrawledAppTestCase(unittest.TestCase):
             },
             {
                 'packageName': 'test.uncrawled.1',
-            }
+            },
+            {
+                'packageName': 'test.uncrawled.2',
+            },
+            {
+                'packageName': 'test.non.game.app',
+            },
+        ]
+        non_game_apps = [
+            {
+              'packageName': 'test.non.game.app',
+            },
         ]
 
         DBManager.get_db()['uncrawled-apps'].insert_many(uncrawled_apps)
+        DBManager.get_db()['other-apps'].insert_many(non_game_apps)
 
     def tearDown(self):
         super().tearDown()
 
         DBManager.get_db()['uncrawled-apps'].delete_many({})
+        DBManager.get_db()['other-apps'].delete_many({})
 
-    def test_get_uncrawled_apps_without_error_code_호출시__에러코드가_없는_언크롤드앱정보를_모두_가져온다(self):
-        uncrawled_app_count = DBManager.get_db()['uncrawled-apps'].count_documents({'errCode': {'$exists': False}})
-        uncrawled_apps = DBManager.get_db()['uncrawled-apps'].find({'errCode': {'$exists': False}})
+    def test_get_uncrawled_package_names_without_error_code_호출시__에러코드가_없는_언크롤드앱의_packageName을_모두_가져온다(self):
+        package_names = DBManager.get_uncrawled_package_names_without_error_code()
 
-        self.assertEqual(1, uncrawled_app_count)
-        self.assertEqual('test.uncrawled.1', uncrawled_apps[0]['packageName'])
+        self.assertEqual(len(package_names), 2)
+        self.assertEqual(package_names, ['test.uncrawled.1', 'test.uncrawled.2'])
 
     def test_delete_uncrawled_app_호출시__입력한_packageName에_해당하는_언크롤드앱_정보를_삭제한다(self):
         DBManager.delete_uncrawled_app('test.uncrawled.1')
-        uncrawled_app_count = DBManager.get_db()['uncrawled-apps'].count_documents({'errCode': {'$exists': False}})
+        result = DBManager.get_db()['uncrawled-apps'].count_documents({'packageName': 'test.uncrawled.1'})
 
-        self.assertEqual(0, uncrawled_app_count)
+        self.assertEqual(0, result)
+
 
 class AppInfoUpdateTestCase(unittest.TestCase):
 

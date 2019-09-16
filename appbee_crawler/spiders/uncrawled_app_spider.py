@@ -11,10 +11,8 @@ class UncrawledAppSpider(scrapy.Spider):
     allowed_domains = ["play.google.com"]
 
     def start_requests(self):
-        uncrawled_apps_list = DBManager.get_uncrawled_apps_without_error_code()
-        for app in uncrawled_apps_list:
-            package_name = app['packageName']
-
+        uncrawled_package_names = DBManager.get_uncrawled_package_names_without_error_code()
+        for package_name in uncrawled_package_names:
             if package_name == 'com.formakers.fomes':
                 continue
 
