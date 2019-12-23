@@ -35,3 +35,7 @@ class AppItem(scrapy.Item):
 
     def is_game(self):
         return True if self.game_category_id_pattern.match(self['categoryId1']) else False
+
+    # def __repr__(self):
+    #     from pprint import pformat
+    #     return pformat(dict(self), width=700)
