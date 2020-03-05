@@ -12,7 +12,7 @@ class DBManager(object):
     def get_db(cls):
         if not cls.db:
             if not cls.connection:
-                cls.connection = MongoClient(os.environ['RELEASE_MONGO_URL'])
+                cls.connection = MongoClient(os.environ['CRAWLER_MONGO_URL'])
 
             if os.environ['PYTHON_ENV'] in ['development', 'staging', 'production']:
                 cls.db = cls.connection.appbee
