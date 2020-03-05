@@ -12,7 +12,7 @@ class DBManager(object):
     def get_db(cls):
         if not cls.db:
             if not cls.connection:
-                cls.connection = MongoClient(os.environ['RELEASE_MONGO_URL'])
+                cls.connection = MongoClient(os.environ['CRAWLER_MONGO_URL'])
 
             if os.environ['PYTHON_ENV'] in ['development', 'staging', 'production']:
                 cls.db = cls.connection.appbee
@@ -36,13 +36,7 @@ class DBManager(object):
         uncrawled_package_names = db['uncrawled-apps'].distinct('packageName', {'errCode': {'$exists': False}})
         other_apps_package_names = db['other-apps'].distinct('packageName')
 
-        target_package_names = []
-
-        for package_name in uncrawled_package_names:
-            if package_name not in other_apps_package_names:
-                target_package_names.append(package_name)
-
-        return target_package_names
+        return list(filter(lambda package_name: package_name not in other_apps_package_names, uncrawled_package_names))
 
     @classmethod
     def update_error_code_of_uncrawled_app(cls, package_name, error_code):

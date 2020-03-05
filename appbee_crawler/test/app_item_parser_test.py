@@ -205,6 +205,12 @@ class ParseImageUrlsTestCase(unittest.TestCase):
         self.assertEqual('https://lh3.googleusercontent.com/Rs9AuPcs6prp0do-nxOglbn6ddqbS9BjOtb55qx'
                          '-18b8QwGqb9mBuSByeiF9qellRj0=w720-h310', image_urls[1])
 
+    # def test_parse_close_beta_app_item_success_response(self):
+    #     response = fake_response('./data/close_beta_app_data.html',
+    #                              'https://play.google.com/store/apps/details?id=com.mavo.moon_shooter')
+    #
+    #     print(AppItemParser.parse(response))
+
 
 if __name__ == '__main__':
     unittest.main()
